@@ -126,4 +126,4 @@ require (
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
 
-replace github.com/openshift/library-go => github.com/openshift-cherrypick-robot/library-go v0.0.0-20260306043517-d482da9e33c8
+replace github.com/openshift/library-go => github.com/openshift-cherrypick-robot/library-go v0.0.0-20260307074344-e59fa0a630d3

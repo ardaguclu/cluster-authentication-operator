@@ -147,8 +147,8 @@ github.com/onsi/ginkgo/v2 v2.21.0 h1:7rg/4f3rB88pb5obDgNZrNHrQ4e6WpjonchcpuBRnZM
 github.com/onsi/ginkgo/v2 v2.21.0/go.mod h1:7Du3c42kxCUegi0IImZ1wUQzMBVecgIHjR1C+NkhLQo=
 github.com/onsi/gomega v1.35.1 h1:Cwbd75ZBPxFSuZ6T+rN/WCb/gOc6YgFBXLlZLhC7Ds4=
 github.com/onsi/gomega v1.35.1/go.mod h1:PvZbdDc8J6XJEpDK4HCuRBm8a6Fzp9/DmhC9C7yFlog=
-github.com/openshift-cherrypick-robot/library-go v0.0.0-20260306043517-d482da9e33c8 h1:QV4wYWnvhlRL0cegHM+u9aMnMxrxPgPGIt2PgY6TOCQ=
-github.com/openshift-cherrypick-robot/library-go v0.0.0-20260306043517-d482da9e33c8/go.mod h1:rYGQrSg+t1JEzeEwg6BJw3loPpXg/n3kgRygUpgxavY=
+github.com/openshift-cherrypick-robot/library-go v0.0.0-20260307074344-e59fa0a630d3 h1:abPJ7lQvBSUwdrSlXWnDfpBVMZ9a7IWyOSG4GhRKyQI=
+github.com/openshift-cherrypick-robot/library-go v0.0.0-20260307074344-e59fa0a630d3/go.mod h1:rYGQrSg+t1JEzeEwg6BJw3loPpXg/n3kgRygUpgxavY=
 github.com/openshift/api v0.0.0-20260304172252-b0658d22beea h1:cakCJUhTaFEf67R5PARXWsgZAFSY0OkpIb0Sxo71gkM=
 github.com/openshift/api v0.0.0-20260304172252-b0658d22beea/go.mod h1:d5uzF0YN2nQQFA0jIEWzzOZ+edmo6wzlGLvx5Fhz4uY=
 github.com/openshift/build-machinery-go v0.0.0-20250530140348-dc5b2804eeee h1:+Sp5GGnjHDhT/a/nQ1xdp43UscBMr7G5wxsYotyhzJ4=
