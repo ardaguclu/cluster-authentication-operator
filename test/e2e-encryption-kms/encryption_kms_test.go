@@ -28,7 +28,7 @@ func TestKMSEncryptionOnOff(t *testing.T) {
 	// Deploy the mock KMS plugin for testing.
 	// NOTE: This manual deployment is only required for KMS v1. In the future,
 	// the platform will manage the KMS plugins, and this code will no longer be needed.
-	librarykms.DeployUpstreamMockKMSPlugin(context.Background(), t, library.GetClients(t).Kube, librarykms.WellKnownUpstreamMockKMSPluginNamespace, librarykms.WellKnownUpstreamMockKMSPluginImage)
+	librarykms.DeployUpstreamMockKMSPlugin(context.Background(), t, library.GetClients(t).Kube, librarykms.WellKnownUpstreamMockKMSPluginNamespace, librarykms.WellKnownUpstreamMockKMSPluginImage, librarykms.DefaultKMSPluginCount)
 	library.TestEncryptionTurnOnAndOff(t, library.OnOffScenario{
 		BasicScenario: library.BasicScenario{
 			Namespace:                       "openshift-config-managed",
@@ -59,7 +59,7 @@ func TestKMSEncryptionOnOff(t *testing.T) {
 // 5. Migrates between the providers in the shuffled order
 // 6. Verifies token is correctly encrypted after each migration
 func TestKMSEncryptionProvidersMigration(t *testing.T) {
-	librarykms.DeployUpstreamMockKMSPlugin(context.Background(), t, library.GetClients(t).Kube, librarykms.WellKnownUpstreamMockKMSPluginNamespace, librarykms.WellKnownUpstreamMockKMSPluginImage)
+	librarykms.DeployUpstreamMockKMSPlugin(context.Background(), t, library.GetClients(t).Kube, librarykms.WellKnownUpstreamMockKMSPluginNamespace, librarykms.WellKnownUpstreamMockKMSPluginImage, librarykms.DefaultKMSPluginCount)
 	library.TestEncryptionProvidersMigration(t, library.ProvidersMigrationScenario{
 		BasicScenario: library.BasicScenario{
 			Namespace:                       "openshift-config-managed",
