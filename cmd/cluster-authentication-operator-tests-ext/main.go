@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+	klog.LogToStderr(true)
 	cmd, err := newOperatorTestCommand()
 	if err != nil {
 		klog.Fatal(err)
