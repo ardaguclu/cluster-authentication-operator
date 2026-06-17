@@ -11,12 +11,12 @@ require (
 	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
 	github.com/openshift-eng/openshift-tests-extension v0.0.0-20260408205138-ec501c2bf4a5
-	github.com/openshift/api v0.0.0-20260521125114-09730f85d883
+	github.com/openshift/api v0.0.0-20260615110019-261e3a0546f3
 	github.com/openshift/build-machinery-go v0.0.0-20251023084048-5d77c1a5e5af
 	github.com/openshift/client-go v0.0.0-20260512113608-deb4dc54551a
 	github.com/openshift/library-go v0.0.0-20260615113748-bc9d4056464b
 	github.com/openshift/multi-operator-manager v0.0.0-20241205181422-20aa3906b99d
-	github.com/openshift/oauth-apiserver v0.0.0-20260430140618-160ac7fb4ea6
+	github.com/openshift/oauth-apiserver v0.0.0-20260520145010-97a820bd5412
 	github.com/spf13/cobra v1.10.0
 	github.com/spf13/pflag v1.0.9
 	github.com/stretchr/testify v1.11.1
