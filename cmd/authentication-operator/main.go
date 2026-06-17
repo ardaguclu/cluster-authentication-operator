@@ -13,6 +13,7 @@ import (
 	"k8s.io/component-base/cli"
 
 	kmshealth "github.com/openshift/library-go/pkg/operator/encryption/kms/health"
+	kmspreflight "github.com/openshift/library-go/pkg/operator/encryption/kms/preflight"
 	"github.com/openshift/library-go/pkg/operator/v1helpers"
 )
 
@@ -46,6 +47,7 @@ func NewAuthenticationOperatorCommand() *cobra.Command {
 		// is implemented in library-go.
 		return nil, nil
 	}))
+	cmd.AddCommand(kmspreflight.NewCommand(context.Background()))
 
 	return cmd
 }
