@@ -14,7 +14,7 @@ require (
 	github.com/openshift/api v0.0.0-20260615110019-261e3a0546f3
 	github.com/openshift/build-machinery-go v0.0.0-20251023084048-5d77c1a5e5af
 	github.com/openshift/client-go v0.0.0-20260512113608-deb4dc54551a
-	github.com/openshift/library-go v0.0.0-20260615113748-bc9d4056464b
+	github.com/openshift/library-go v0.0.0-20260618132022-b0f5231f2ed6
 	github.com/openshift/multi-operator-manager v0.0.0-20241205181422-20aa3906b99d
 	github.com/openshift/oauth-apiserver v0.0.0-20260520145010-97a820bd5412
 	github.com/spf13/cobra v1.10.0
