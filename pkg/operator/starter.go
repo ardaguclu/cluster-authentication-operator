@@ -577,6 +577,7 @@ func prepareOauthAPIServerOperator(
 				Files: []string{
 					"oauth-apiserver/ns.yaml",
 					"oauth-apiserver/networkpolicy_oauth-apiserver.yaml",
+					"oauth-apiserver/networkpolicy_kmspreflight.yaml",
 					"oauth-apiserver/networkpolicy_namespace_default-deny-all.yaml",
 				},
 			},
