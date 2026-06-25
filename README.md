@@ -14,12 +14,65 @@ can be viewed in a cluster with:
 $ oc get crd authentications.operator.openshift.io -o yaml
 ```
 
-Many OpenShift ClusterOperators share common build, test, deployment, and update methods.    
-For more information about how to build, deploy, test, update, and develop OpenShift ClusterOperators, see      
-[OpenShift ClusterOperator and Operand Developer Document](https://github.com/openshift/enhancements/blob/master/dev-guide/operators.md#how-do-i-buildupdateverifyrun-unit-tests)
+## What This Operator Manages
 
-This section explains how to deploy OpenShift with your test cluster-authentication-operator image:
-[Testing a ClusterOperator/Operand image in a cluster](https://github.com/openshift/enhancements/blob/master/dev-guide/operators.md#how-can-i-test-changes-to-an-openshift-operatoroperandrelease-component)
+The authentication operator manages the following operands:
+
+- **oauth-openshift** — the OAuth server deployment in the `openshift-authentication` namespace. Handles user authentication flows, login templates, and token generation.
+- **oauth-apiserver** — the OAuth API server deployment in the `openshift-oauth-apiserver` namespace. Serves the OAuth API resources (`OAuthAccessTokens`, `OAuthAuthorizeTokens`, `OAuthClients`).
+
+For each operand, the operator manages the associated Deployments, Services, RBAC, NetworkPolicies, PodDisruptionBudgets, and monitoring resources (PrometheusRules, ServiceMonitor).
+
+For a deeper look at the operator's architecture, see [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Development
+
+Many OpenShift ClusterOperators share common build, test, deployment, and update methods.
+For more information about how to build, deploy, test, update, and develop OpenShift ClusterOperators, see
+[OpenShift ClusterOperator and Operand Developer Document](https://github.com/openshift/enhancements/blob/master/dev-guide/operators.md#how-do-i-buildupdateverifyrun-unit-tests).
+
+To deploy OpenShift with your test cluster-authentication-operator image, see
+[Testing a ClusterOperator/Operand image in a cluster](https://github.com/openshift/enhancements/blob/master/dev-guide/operators.md#how-can-i-test-changes-to-an-openshift-operatoroperandrelease-component).
+
+For contribution guidelines, including pre-submit checks, dependency management, and testing expectations, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Add a basic IdP to test your stuff
+
+The most common identity provider for demoing and testing is the HTPasswd IdP.
+
+To set it up, take the following steps:
+
+1. Create a new htpasswd file
+```
+$ htpasswd -bBc /tmp/htpasswd testuser testpasswd
+```
+2. (optional) Add more users
+```
+$ htpasswd -bB /tmp/htpasswd testuser2 differentpassword
+```
+3. Create a secret from that htpasswd in the `openshift-config` namespace
+```
+oc create secret generic myhtpasswdidp-secret -n openshift-config --from-file=/tmp/htpasswd
+```
+4. Configure the OAuth server to use the HTPasswd IdP from the secret by editing the spec of the cluster-wide OAuth/cluster object so that it looks like the one in this example:
+```
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: htpassidp
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: myhtpasswdidp-secret
+```
+5. The operator will now restart the OAuth server deployment and mount the new config
+6. When the operator is available again (`oc get clusteroperator authentication`), you should be able to log in:
+```
+oc login -u testuser -p testpasswd
+```
 
 ## Tests
 
@@ -58,40 +111,3 @@ make build
 ```
 
 For more information about the OTE framework, see the [openshift-tests-extension documentation](https://github.com/openshift-eng/openshift-tests-extension).
-
-## Add a basic IdP to test your stuff
-The most common identity provider for demoing and testing is the HTPasswd IdP.
-
-To set it up, take the following steps:
-
-1. Create a new htpasswd file
-```
-$ htpasswd -bBc /tmp/htpasswd testuser testpasswd
-```
-2. (optional) Add more users
-```
-$ htpasswd -bB /tmp/htpasswd testuser2 differentpassword
-```
-3. Create a secret from that htpasswd in the `openshift-config` namespace
-```
-oc create secret generic myhtpasswdidp-secret -n openshift-config --from-file=/tmp/htpasswd
-```
-4. Configure the OAuth server to use the HTPasswd IdP from the secret by editing the spec of the cluster-wide OAuth/cluster object so that it looks like the one in this example:
-```
-apiVersion: config.openshift.io/v1
-kind: OAuth
-metadata:
-  name: cluster
-spec:
-  identityProviders:
-  - name: htpassidp
-    type: HTPasswd
-    htpasswd:
-      fileData:
-        name: myhtpasswdidp-secret
-```
-5. The operator will now restart the OAuth server deployment and mount the new config
-6. When the operator is available again (`oc get clusteroperator authentication`), you should be able to log in:
-```
-oc login -u testuser -p testpasswd
-```

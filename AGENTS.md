@@ -16,6 +16,13 @@ The operator runs in `openshift-authentication-operator` namespace and orchestra
 
 **External OIDC Mode:** Recent development focuses on external OIDC support. When external OIDC is enabled (via `Authentication.config.openshift.io/cluster` spec), the operator disables the default OAuth stack and configures the cluster to use an external OIDC provider instead. See `pkg/controllers/externaloidc/` for implementation. Future feature development should be focused on external OIDC support, and the existing OAuth stack is considered feature complete.
 
+The following feature gates control External OIDC behavior and conditionally enable controllers/resources:
+
+- `ExternalOIDC` — enables External OIDC mode itself
+- `ExternalOIDCWithUIDAndExtraClaimMappings` — enables additional claim mappings (UID, extra claims) for OIDC providers
+- `ExternalOIDCWithUpstreamParity` — enables upstream-parity features for OIDC authentication
+- `ExternalOIDCExternalClaimsSourcing` — when enabled, preserves the oauth-apiserver under OIDC (instead of deleting it) and enables external claims sourcing
+
 ## Commands
 
 ```bash
@@ -38,24 +45,26 @@ make verify-bindata                     # Verify bindata is current
 
 # Dependencies
 go get <module>@<version>
-go mod tidy
+go mod tidy && go mod vendor
 make verify
+
+# If carrying patches on vendored code
+make update-deps-overrides
 ```
 
 ## Tech Stack
 
-- **Go** - Check `go.mod` for current version
-- **Kubernetes client-go** - Check `go.mod` for current version
+- **Go** - See `go.mod` for version
 - **OpenShift library-go** - Controller factory, resourceapply, operatorhelpers
 - **OpenShift api** - Authentication/OAuth CRDs
 - **klog/v2** - Structured logging
-- **Cobra** - CLI framework
 
 ## Always Do
 
 - **Use informers and listers** - Never make direct API calls in controller sync loops
-- **Run `make update-bindata`** after modifying any YAML in `bindata/oauth-openshift/` or `bindata/oauth-apiserver/`
+- **Run `make update-bindata`** after updating vendored CRDs that are copied into `bindata/` (e.g. the RoleBindingRestriction CRD). Editing YAML files directly in `bindata/` does not require this step — they are embedded via `//go:embed`
 - **Use `resourceapply` helpers** - `ApplyDeployment()`, `ApplyService()`, etc. from library-go
+- **Propagate `context.Context`** - When a function accepts or has access to a `context.Context`, pass it through to downstream calls that accept one. Never discard a context or substitute `context.Background()`/`context.TODO()` when a context is already available
 - **Return errors from sync()** to trigger automatic retry
 - **Use table-driven tests** for unit tests
 - **Log with klog** - Use structured logging with klog.V() levels
@@ -72,10 +81,10 @@ make verify
 ## Never Do
 
 - **Never commit secrets** or credentials to the repo
-- **Never modify `vendor/`** directly - Use `go get` and `go mod tidy`
+- **Never modify `vendor/`** directly without updating `deps.diff` - Use `go get`, `go mod tidy`, and `go mod vendor`. If carrying patches on vendored code, run `make update-deps-overrides`
 - **Never skip encryption tests** - They're serial and slow (4h) but critical
 - **Never make direct API calls in controllers** - Always use informers/listers for performance
-- **Never modify bindata/ without running `make update-bindata`**
+- **Never modify bindata/ CRDs sourced from vendor without running `make update-bindata`**
 - **Never run encryption tests in parallel** - They must run serially (`-p 1 -parallel 1`)
 - **Never use generic "helpful assistant" code** - Follow OpenShift operator patterns
 
@@ -118,6 +127,7 @@ func (c *myController) sync(ctx context.Context, syncCtx factory.SyncContext) er
         c.client,
         recorder,
         requiredDeployment,
+        expectedGeneration,
     )
     return err
 }
@@ -157,14 +167,11 @@ test/library/                       # Shared test utilities
 
 ### Modify Embedded Manifests
 
+YAML files under `bindata/` are embedded via `//go:embed` — edit them directly, no generation step needed. The only exception is CRDs copied from `vendor/` (e.g. the RoleBindingRestriction CRD):
+
 ```bash
-# Edit YAML
-vim bindata/oauth-openshift/deployment.yaml
-
-# Update embedded Go code
+# After updating vendored CRDs
 make update-bindata
-
-# Verify
 make verify-bindata
 ```
 
